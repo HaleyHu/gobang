@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>五子棋-最好玩的游戏-斌斌工作室</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<style type="text/css">
+		#history:hover{
+			background-color: grep;
+		}
+		#history{
+			background-color: white;
+		}
+		</style>
+	</head>
+	<body>
+	<table>
+	<tr>
+		<td style="border:1px solid red;">
+			<canvas id="panel" tabindex="0" width="660" height="660">
+			Your browser does not support the canvas element.
+			</canvas>
+		</td>
+		<td>
+			<div style="position:relative;width: 100px;height: 200px;overflow-y:auto;border: 1px solid green;"><ol id="history"></ol></div>
+			<div>
+				<label><input type="radio" name="turn" value="black" checked="checked" disabled="disabled"/>黑棋走</label><br/>
+				<label><input type="radio" name="turn" value="white" disabled="disabled" />白棋走</label>
+			</div>
+			<div>
+ 				<input type="button" value="开始" onclick="init()" /><br/>
+				<input type="button" value="悔棋" onclick="" /><br/>
+				<input type="button" value="撤消悔棋" onclick="" /><br/>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+	<script type="text/javascript" src="js/init.js"> </script>
+	</body>
+</html>

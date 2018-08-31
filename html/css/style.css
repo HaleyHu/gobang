@@ -1,0 +1,24 @@
+/* 
+.title {
+	text-align: center;
+	font-size: 40px;
+}
+
+.chessboard {
+	width: 650px;
+	height: 650px;
+	border:1px solid red;
+}
+
+canvas {
+	width: 610px;
+	height: 610px;
+}
+
+.scrollDiv {
+	width: 100px;
+	height:200px;
+	overflow: scroll;
+	border: 1px green red;
+}
+ */
