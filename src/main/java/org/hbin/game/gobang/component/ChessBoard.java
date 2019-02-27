@@ -11,7 +11,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class ChessBoard extends JPanel {
@@ -37,14 +36,17 @@ public class ChessBoard extends JPanel {
 	/** 下一步轮到哪一方下棋，默认开始是黑棋先 */
 	private boolean isBlack = true;
 	/** 是否正在游戏 */
-	private boolean isGamming = true;
+	private boolean isGamming;
+	
+	private boolean isTurn = false;
 	
 	private Image img;
 	
-	private MainFrame mainFrame;
-	
-	public ChessBoard(MainFrame mainFrame) {
-		this.mainFrame = mainFrame;
+//	private MainFrame mainFrame;
+
+    public ChessBoard() {
+//    public ChessBoard(MainFrame mainFrame) {
+//		this.mainFrame = mainFrame;
 		//img = Toolkit.getDefaultToolkit().getImage("images/board.jpg");
 		img = new ImageIcon(getClass().getResource("/images/gobang/board.jpg")).getImage();
 		chessList = new ArrayList<Chess>();
@@ -52,7 +54,15 @@ public class ChessBoard extends JPanel {
 		addMouseMotionListener(new MouseMotionMonitor());
 	}
 	
-	@Override
+	public void setBlack(boolean isBlack) {
+        this.isBlack = isBlack;
+    }
+
+    public void setGamming(boolean isGamming) {
+        this.isGamming = isGamming;
+    }
+
+    @Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
@@ -131,34 +141,34 @@ public class ChessBoard extends JPanel {
 		return false;
 	}
 	
-	/**
-	 * 重新开始
-	 */
-	public void restartGame() {
-		// 消除棋子
-		chessList = new ArrayList<Chess>();
-		mainFrame.getBarStatus().setText("下一步：黑棋");
-		
-		//恢复游戏相关变量值
-		isBlack = true;
-		isGamming = true;
-		repaint();
-	}
+//	/**
+//	 * 重新开始
+//	 */
+//	public void restartGame() {
+//		// 消除棋子
+//		chessList = new ArrayList<Chess>();
+//		mainFrame.getBarStatus().setText("下一步：黑棋");
+//		
+//		//恢复游戏相关变量值
+//		isBlack = true;
+//		isGamming = true;
+//		repaint();
+//	}
 	
-	/**
-	 * 悔棋
-	 */
-	public void goBack() {
-		if(chessList.size() == 0) {
-			return;
-		}
-		chessList.remove(chessList.size() - 1);
-		String name = isBlack ? "白棋" : "黑棋";
-		mainFrame.getBarStatus().setText("下一步：" + name);
-		
-		isBlack = !isBlack;
-		repaint();
-	}
+//	/**
+//	 * 悔棋
+//	 */
+//	public void goBack() {
+//		if(chessList.size() == 0) {
+//			return;
+//		}
+//		chessList.remove(chessList.size() - 1);
+//		String name = isBlack ? "白棋" : "黑棋";
+//		mainFrame.getBarStatus().setText("下一步：" + name);
+//		
+//		isBlack = !isBlack;
+//		repaint();
+//	}
 
 	/**
 	 * 判断胜负
@@ -286,10 +296,13 @@ public class ChessBoard extends JPanel {
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			System.out.println("mousePressed");
+//			System.out.println("mousePressed");
 			if (!isGamming) {
 				return;
 			}
+            if (!isTurn) {
+                return;
+            }
 			int col = (e.getX() - MARGIN + SPAN / 2) / SPAN;
 			int row = (e.getY() - MARGIN + SPAN / 2) / SPAN;
 			// 落在棋盘外不能下棋
@@ -310,6 +323,9 @@ public class ChessBoard extends JPanel {
 			if (!isGamming) {
 				return;
 			}
+            if (!isTurn) {
+                return;
+            }
 			int col = (e.getX() - MARGIN + SPAN / 2) / SPAN;
 			int row = (e.getY() - MARGIN + SPAN / 2) / SPAN;
 			// 落在棋盘外不能下棋
@@ -327,16 +343,17 @@ public class ChessBoard extends JPanel {
 			repaint();
 			
 			if(isWin(col, row)) {
-				String name = isBlack ? "黑棋":"白棋";
-				String msg = String.format("恭喜，%s赢了！", name);
-				mainFrame.getBarStatus().setText(msg);
-				JOptionPane.showMessageDialog(ChessBoard.this, msg);
-				isGamming = false;
-				return;
+//				String name = isBlack ? "黑棋":"白棋";
+//				String msg = String.format("恭喜，%s赢了！", name);
+//				mainFrame.getBarStatus().setText(msg);
+//				JOptionPane.showMessageDialog(ChessBoard.this, msg);
+//				isGamming = false;
+//				return;
 			}
-			
-			String name = isBlack ? "白棋" : "黑棋";
-			mainFrame.getBarStatus().setText("下一步：" + name);
+			isTurn = false;
+//			
+//			String name = isBlack ? "白棋" : "黑棋";
+//			mainFrame.getBarStatus().setText("下一步：" + name);
 			isBlack = !isBlack;
 		}
 	}

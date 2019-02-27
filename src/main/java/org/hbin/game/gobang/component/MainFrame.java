@@ -41,7 +41,7 @@ public class MainFrame extends JFrame {
 		
 		add(toolbar, BorderLayout.NORTH);
 		
-		boardPanel = new ChessBoard(this);
+		boardPanel = new ChessBoard();
 		add(boardPanel);
 		
 		barStatus = new BarStatus();
@@ -64,13 +64,13 @@ public class MainFrame extends JFrame {
 	class ActionMonitor implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(e.getSource() == startButton) {
-				boardPanel.restartGame();
-			} else if(e.getSource() == backButton) {
-				boardPanel.goBack();
-			} else if(e.getSource() == exitButton) {
-				System.exit(0);
-			}
+//			if(e.getSource() == startButton) {
+//				boardPanel.restartGame();
+//			} else if(e.getSource() == backButton) {
+//				boardPanel.goBack();
+//			} else if(e.getSource() == exitButton) {
+//				System.exit(0);
+//			}
 		}
 	}
 }
