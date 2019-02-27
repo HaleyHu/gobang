@@ -8,11 +8,14 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 import org.hbin.game.gobang.common.Command;
 import org.hbin.game.gobang.component.TimeDialog;
+import org.hbin.game.gobang.component.TimerThread;
 
 public class Communication {
     private GobangClient client;
     private DataOutputStream out;
     private Socket s;
+    
+    private TimerThread timer;
 
     public Communication(GobangClient client) {
         this.client = client;
@@ -31,6 +34,39 @@ public class Communication {
     public void join(String opName) {
         try {
             out.writeUTF(Command.JOIN + ":" + opName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void go(int col, int row) {
+        try {
+            String msg = Command.GO + ":" + col + ":" + row;
+            out.writeUTF(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void win() {
+        try {
+            out.writeUTF(Command.WIN);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void giveup() {
+        try {
+            out.writeUTF(Command.GIVEUP);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void disConnect() {
+        try {
+            out.writeUTF(Command.QUIT);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,6 +150,31 @@ public class Communication {
                                 client.getControlPanel().getLostButton().setEnabled(true);
                                 client.getControlPanel().getExitButton().setEnabled(false);
                                 client.getMessagePanel().getMessageArea().append("My color is " + words[1] + "\n");
+                                
+                                timer = new TimerThread(client, 120);
+                                timer.start();
+                                break;
+                            case Command.GO:
+                                int col = Integer.parseInt(words[1]);
+                                int row = Integer.parseInt(words[2]);
+                                client.getBoard().addOpponentChess(col, row);
+                                break;
+                            case Command.TELL_RESULT:
+                                client.getBoard().gameOver("win".equals(words[1]));
+                                client.getControlPanel().getJoinButton().setEnabled(true);
+                                client.getControlPanel().getLostButton().setEnabled(false);
+                                client.getControlPanel().getExitButton().setEnabled(true);
+                                break;
+                            case Command.DELETE:
+                                for (int i = 0; i < client.getUserListPanel().userList.getItemCount(); i++) {
+                                    String username = client.getUserListPanel().userList.getItem(i);
+                                    if(username.startsWith(words[1])) {
+                                        client.getUserListPanel().userList.remove(i);
+                                    }
+                                }
+                                client.getMessagePanel().getMessageArea().append(words[1] + " disconnected\n");
+                                break;
+                            default:
                                 break;
                         }
                     }

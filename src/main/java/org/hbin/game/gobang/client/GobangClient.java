@@ -36,7 +36,7 @@ public class GobangClient extends JFrame {
     
     private void init() {
         setTitle("五子棋客户端");
-        board = new ChessBoard();
+        board = new ChessBoard(this);
         add(board);
         
         timingPanel = new TimingPanel();
@@ -92,6 +92,10 @@ public class GobangClient extends JFrame {
         }
     }
 
+    public Communication getC() {
+        return c;
+    }
+
     public ChessBoard getBoard() {
         return board;
     }
@@ -129,11 +133,14 @@ public class GobangClient extends JFrame {
         public void actionPerformed(ActionEvent e) {
             JButton source = (JButton) e.getSource();
             if(source == controlPanel.getExitButton()) {
+                if(isConnected) {
+                    c.disConnect();
+                }
                 System.exit(0);
             } else if(source == controlPanel.getConnectButton()) {
                 connect();
             } else if(source == controlPanel.getLostButton()) {
-                
+                c.giveup();
             } else if(source == controlPanel.getJoinButton()) {
                 join();
             }

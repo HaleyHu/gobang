@@ -231,6 +231,56 @@ public class GobangServer extends JFrame {
                         messageArea.append(c.name + " playing\n");
                         messageArea.append(opName + " playing\n");
                         break;
+                    case Command.GO:
+                        out = new DataOutputStream(c.opponent.s.getOutputStream());
+                        out.writeUTF(msg);
+                        messageArea.append(c.name + " " + msg + "\n");
+                        break;
+                    case Command.WIN:
+                        //更新所有客户端的客户列表中，这两个客户的状态
+                        for (int i = 0; i < clients.size(); i++) {
+                            out = new DataOutputStream(clients.get(i).s.getOutputStream());
+                            out.writeUTF(Command.CHANGE + ":" + c.name + ":false");
+                            out.writeUTF(Command.CHANGE + ":" + c.opponent.name + ":false");
+                        }
+                        out = new DataOutputStream(c.s.getOutputStream());
+                        out.writeUTF(Command.TELL_RESULT + ":win");
+                        out = new DataOutputStream(c.opponent.s.getOutputStream());
+                        out.writeUTF(Command.TELL_RESULT + ":lose");
+                        
+                        c.gaming = false;
+                        c.opponent.gaming = false;
+                        messageArea.append(c.name + " win\n");
+                        messageArea.append(c.opponent.name + " lose\n");
+                        break;
+                    case Command.GIVEUP:
+                        for (int i = 0; i < clients.size(); i++) {
+                            out = new DataOutputStream(clients.get(i).s.getOutputStream());
+                            out.writeUTF(Command.CHANGE + ":" + c.name + ":false");
+                            out.writeUTF(Command.CHANGE + ":" + c.opponent.name + ":false");
+                        }
+                        
+                        out = new DataOutputStream(c.s.getOutputStream());
+                        out.writeUTF(Command.TELL_RESULT + ":lose");
+                        out = new DataOutputStream(c.opponent.s.getOutputStream());
+                        out.writeUTF(Command.TELL_RESULT + ":win");
+                        c.gaming = false;
+                        c.opponent.gaming = false;
+                        messageArea.append(c.name + " loss\n");
+                        messageArea.append(c.opponent.name + " win\n");
+                        break;
+                    case Command.QUIT:
+                        for (int i = 0; i < clients.size(); i++) {
+                            if(clients.get(i) != c) {
+                                out = new DataOutputStream(clients.get(i).s.getOutputStream());
+                                out.writeUTF(Command.DELETE + ":" + c.name);
+                            }
+                        }
+                        clients.remove(c);
+                        messageArea.append(c.name + " quit\n");
+                        clientNumber --;
+                        statusLabel.setText("当前连接数：" + clientNumber);
+                        return;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

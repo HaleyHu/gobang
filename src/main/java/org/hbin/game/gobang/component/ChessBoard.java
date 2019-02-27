@@ -11,7 +11,9 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import org.hbin.game.gobang.client.GobangClient;
 
 public class ChessBoard extends JPanel {
 	private static final long serialVersionUID = 1606271597348141300L;
@@ -43,19 +45,28 @@ public class ChessBoard extends JPanel {
 	private Image img;
 	
 //	private MainFrame mainFrame;
+	
+	private GobangClient client;
 
-    public ChessBoard() {
-//    public ChessBoard(MainFrame mainFrame) {
-//		this.mainFrame = mainFrame;
+    public ChessBoard(GobangClient client) {
+        this.client = client;
 		//img = Toolkit.getDefaultToolkit().getImage("images/board.jpg");
 		img = new ImageIcon(getClass().getResource("/images/gobang/board.jpg")).getImage();
-		chessList = new ArrayList<Chess>();
+		chessList = new ArrayList<>();
 		addMouseListener(new MouseMonitor());
 		addMouseMotionListener(new MouseMotionMonitor());
 	}
 	
 	public void setBlack(boolean isBlack) {
         this.isBlack = isBlack;
+    }
+
+    public boolean isGamming() {
+        return isGamming;
+    }
+
+    public boolean isTurn() {
+        return isTurn;
     }
 
     public void setGamming(boolean isGamming) {
@@ -286,6 +297,28 @@ public class ChessBoard extends JPanel {
 		return count >= 5;
 	}
 	
+	public void addOpponentChess(int col, int row) {
+	    Chess chess = new Chess(col, row, isBlack ? Color.WHITE:Color.BLACK);
+	    chessList.add(chess);
+	    isTurn = true;
+	    repaint();
+	}
+	
+	public void gameOver(boolean win) {
+	    resetGame();
+        
+        String template = win ? "恭喜，%s赢了！" : "遗憾，%s输了！";
+        String msg = String.format(template, isBlack ? "黑棋":"白棋");
+        JOptionPane.showMessageDialog(ChessBoard.this, msg);
+	}
+	
+	public void resetGame() {
+	    chessList = new ArrayList<>();
+	    isGamming = false;
+	    repaint();
+	    client.getControlPanel().getJoinButton().setEnabled(true);
+	}
+	
 	class MouseMonitor extends MouseAdapter {
 		@Override
 		public void mouseReleased(MouseEvent e) {
@@ -342,7 +375,11 @@ public class ChessBoard extends JPanel {
 			
 			repaint();
 			
+			isTurn = false;
+			client.getC().go(col, row);
+			
 			if(isWin(col, row)) {
+			    client.getC().win();
 //				String name = isBlack ? "黑棋":"白棋";
 //				String msg = String.format("恭喜，%s赢了！", name);
 //				mainFrame.getBarStatus().setText(msg);
@@ -350,7 +387,6 @@ public class ChessBoard extends JPanel {
 //				isGamming = false;
 //				return;
 			}
-			isTurn = false;
 //			
 //			String name = isBlack ? "白棋" : "黑棋";
 //			mainFrame.getBarStatus().setText("下一步：" + name);

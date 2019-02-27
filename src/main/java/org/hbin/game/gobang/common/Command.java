@@ -11,4 +11,15 @@ public class Command {
     public static final String AGREE = "agree";
     public static final String CHANGE = "change";
     public static final String GUESS_COLOR = "guessColor";
+    
+
+    public static final String GO = "go";
+    public static final String WIN = "win";
+    public static final String TELL_RESULT = "tellResult";
+    
+    public static final String GIVEUP = "giveup";
+
+    public static final String QUIT = "quit";
+    public static final String DELETE = "delete";
+    
 }
